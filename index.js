@@ -33,7 +33,7 @@ app.use("/images", express.static(path.join(__dirname,"/images")));
 // .catch((err) => console.log("Error connecting to MongoDB",err.message));
 
 // ✅ MongoDB Connection
-const MONGO_URL = process.env.MONGO_URL || "mongodb+srv://Ajchaitan:Password9@cluTutorialsster0.btyoncp.mongodb.net/Tutorials";
+const MONGO_URL = process.env.MONGO_URL || "mongodb+srv://sairam:ap39kg3939@cluster0.5z4fz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 // const MONGO_URL = process.env.MONGO_URL || "mongodb+srv://Ajchaitan:Password9@cluster0.btyoncp.mongodb.net/Tutorials?retryWrites=true&w=majority";
 
 
