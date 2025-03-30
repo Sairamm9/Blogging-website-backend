@@ -18,13 +18,20 @@ const Post = require("../models/Post");
 
 router.post("/", async (req, res) => {
     try {
+        console.log("Incoming request body:", req.body);  // Debugging
+
+        if (!req.body.title || !req.body.desc || !req.body.username) {
+            return res.status(400).json({ error: "Title, description, and username are required" });
+        }
+
         const newPost = new Post(req.body);
         const savedPost = await newPost.save();
+
+        console.log("Post saved successfully:", savedPost);  // Debugging
         res.status(201).json(savedPost);
     } catch (error) {
         console.error("Error saving post:", error);
 
-        // Check for validation errors
         if (error.name === 'ValidationError') {
             return res.status(400).json({ error: error.message });
         }
@@ -32,6 +39,7 @@ router.post("/", async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 
 
 
@@ -62,27 +70,24 @@ router.put("/:id", async (req, res) => {
 
 
 
-// DELETE POST 
 router.delete("/:id", async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
-        if(post.username === req.body.username){
-            try {
-                // await post.remove();
-                await Post.findByIdAndDelete(req.params.id);
-                res.status(200).json("Post has been deleted...");
-            } 
-            catch (error) {
-                res.status(500).json(error);
-            }
+        if (!post) return res.status(404).json({ error: "Post not found" });
+
+        if (post.username !== req.body.username) {
+            return res.status(401).json({ error: "Unauthorized action" });
         }
-        else{
-            res.status(401).json("You can delete only your post")
-        }
+
+        await Post.deleteOne({ _id: req.params.id });
+        res.status(200).json({ message: "Post deleted successfully" });
+
     } catch (error) {
-        res.status(500).json(error);
+        console.error("Error deleting post:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 
 
 
